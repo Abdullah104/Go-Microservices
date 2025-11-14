@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"microservices/data"
 	"net/http"
@@ -83,10 +84,20 @@ func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 			return
 		}
 
-		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
+		// Validate the product
+		err = prod.Validate()
+		if err != nil {
+			p.l.Println("[ERROR] validating product")
+			http.Error(rw, fmt.Sprintf("Error reading product %s", err), http.StatusBadRequest)
 
+			return
+		}
+
+		// Add the product to the context
+		ctx := context.WithValue(r.Context(), KeyProduct{}, prod)
 		req := r.WithContext(ctx)
 
+		// Call the next handler
 		next.ServeHTTP(rw, req)
 	})
 }
