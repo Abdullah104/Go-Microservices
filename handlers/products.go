@@ -1,3 +1,13 @@
+// @Title 			of Product API
+// @Description Documentation for Product API
+
+// @Schemes  http
+// @BasePath /
+// @Version  1.0.0
+
+// @Accept json
+// @Produce json
+
 package handlers
 
 import (
