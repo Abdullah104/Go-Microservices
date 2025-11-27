@@ -1,12 +1,59 @@
 basePath: /
 consumes:
 - application/json
+definitions:
+  data.Product:
+    description: defines the structure for an API product
+    properties:
+      description:
+        type: string
+      id:
+        description: The ID for this product
+        minimum: 1
+        type: integer
+      name:
+        type: string
+      price:
+        type: number
+      sku:
+        type: string
+    required:
+    - id
+    - name
+    - sku
+    type: object
 info:
   contact: {}
   description: Documentation for Product API
   title: of Product API
   version: 1.0.0
-paths: {}
+paths:
+  /:
+    get:
+      description: returns the products from the data store
+      responses:
+        "200":
+          description: a list of products in the response
+          schema:
+            items:
+              $ref: '#/definitions/data.Product'
+            type: array
+      tags:
+      - products
+  /{id}:
+    delete:
+      description: deletes a product from the data store
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "201":
+          description: Created
+      tags:
+      - products
 produces:
 - application/json
 schemes:

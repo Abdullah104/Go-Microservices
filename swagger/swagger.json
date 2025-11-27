@@ -16,5 +16,77 @@
         "version": "1.0.0"
     },
     "basePath": "/",
-    "paths": {}
+    "paths": {
+        "/": {
+            "get": {
+                "description": "returns the products from the data store",
+                "tags": [
+                    "products"
+                ],
+                "responses": {
+                    "200": {
+                        "description": "a list of products in the response",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/data.Product"
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/{id}": {
+            "delete": {
+                "description": "deletes a product from the data store",
+                "tags": [
+                    "products"
+                ],
+                "parameters": [
+                    {
+                        "type": "integer",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Created"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "data.Product": {
+            "description": "defines the structure for an API product",
+            "type": "object",
+            "required": [
+                "id",
+                "name",
+                "sku"
+            ],
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "description": "The ID for this product",
+                    "type": "integer",
+                    "minimum": 1
+                },
+                "name": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "number"
+                },
+                "sku": {
+                    "type": "string"
+                }
+            }
+        }
+    }
 }

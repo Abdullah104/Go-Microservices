@@ -1,12 +1,12 @@
-// @Title 			of Product API
-// @Description Documentation for Product API
+//	@Title			of Product API
+//	@Description	Documentation for Product API
 
-// @Schemes  http
-// @BasePath /
-// @Version  1.0.0
+//	@Schemes	http
+//	@BasePath	/
+//	@Version	1.0.0
 
-// @Accept json
-// @Produce json
+//	@Accept		json
+//	@Produce	json
 
 package handlers
 
@@ -31,53 +31,9 @@ func NewProducts(l *log.Logger) *Products {
 	return &Products{l}
 }
 
-// getProducts returns the products from the data store
-func (p *Products) GetProducts(rw http.ResponseWriter, r *http.Request) {
-	// fetch the products from the data store
-	lp := data.GetProducts()
-
-	// serialize the list into JSON
-	error := lp.ToJSON(rw)
-
-	if error != nil {
-		http.Error(rw, "Unable to marshal json", http.StatusInternalServerError)
-	}
-}
-
-func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
-	prod := r.Context().Value(KeyProduct{}).(*data.Product)
-
-	data.AddProduct(prod)
-
-	prod.ToJSON(rw)
-}
-
-func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	id, err := strconv.Atoi(vars["id"])
-
-	if err != nil {
-		http.Error(rw, "Unable to convert id", http.StatusBadRequest)
-
-		return
-	}
-
-	prod := r.Context().Value(KeyProduct{}).(*data.Product)
-
-	err = data.UpdateProduct(id, prod)
-	if err == data.ErrProductNotFound {
-		http.Error(rw, "Product not found", http.StatusNotFound)
-
-		return
-	}
-
-	if err != nil {
-		http.Error(rw, "Product not found", http.StatusInternalServerError)
-
-		return
-	}
-
-	prod.ToJSON(rw)
+// GenericError is a generic error message returned by the server
+type GenericError struct {
+	Message string `json:"message"`
 }
 
 type KeyProduct struct{}
@@ -110,4 +66,22 @@ func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 		// Call the next handler
 		next.ServeHTTP(rw, req)
 	})
+}
+
+// getProductId returns the product's id from the url
+// Panics if cannot convert the id into an integer
+// This should never happen as the router ensures that this is a valid number
+func getProductID(r *http.Request) int {
+	// parse the product id from the url
+	vars := mux.Vars(r)
+
+	// convert the id into an integer and return
+	id, err := strconv.Atoi(vars["id"])
+
+	if err != nil {
+		// should never happen
+		panic(err)
+	}
+
+	return id
 }

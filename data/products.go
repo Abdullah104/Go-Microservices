@@ -10,8 +10,10 @@ import (
 	"github.com/go-playground/validator/v10"
 )
 
+// @Description	defines the structure for an API product
 type Product struct {
-	ID          int     `json:"id"`
+	// The ID for this product
+	ID          int     `json:"id" binding:"required,min=1"`
 	Name        string  `json:"name" validate:"required"`
 	Description string  `json:"description"`
 	Price       float32 `json:"price" validate:"gt=0"`
@@ -106,6 +108,19 @@ func UpdateProduct(id int, p *Product) error {
 	return nil
 }
 
+// DeleteProduct deletes a product from the database
+func DeleteProduct(id int) error {
+	i := findIndexByProductId(id)
+
+	if i == -1 {
+		return ErrProductNotFound
+	}
+
+	productList = append(productList[:i], productList[i+1:]...)
+
+	return nil
+}
+
 var ErrProductNotFound = fmt.Errorf("Product not found")
 
 func findProduct(id int) (*Product, int, error) {
@@ -116,4 +131,16 @@ func findProduct(id int) (*Product, int, error) {
 	}
 
 	return nil, -1, ErrProductNotFound
+}
+
+// findIndex finds the index of a product in the database
+// returns -1 when no product can be found
+func findIndexByProductId(id int) int {
+	for i, p := range productList {
+		if p.ID == id {
+			return i
+		}
+	}
+
+	return -1
 }
