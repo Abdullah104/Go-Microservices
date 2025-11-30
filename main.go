@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"os"
 	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/go-openapi/runtime/middleware"
@@ -63,20 +64,24 @@ func main() {
 	go func() {
 		error := s.ListenAndServe()
 
-		if error != nil {
+		if error != nil && error != http.ErrServerClosed {
 			l.Fatal(error)
 		}
 	}()
 
 	// Trap sigterm or interrupt and gracefully shutdown the server
-	sigChan := make(chan os.Signal)
-	signal.Notify(sigChan, os.Interrupt)
-	signal.Notify(sigChan, os.Kill)
+	sigChan := make(chan os.Signal, 1)
+	signal.Notify(sigChan, os.Interrupt, syscall.SIGTERM)
 
 	sig := <-sigChan
 	l.Println("Received terminate, graceful shutdown", sig)
 
-	tc, _ := context.WithTimeout(context.Background(), 30*time.Second)
+	tc, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel() // Important: release resources
 
-	s.Shutdown(tc)
+	if err := s.Shutdown(tc); err != nil {
+		l.Printf("Server shutdown error: %v\n", err)
+	}
+
+	l.Println("Server stopped")
 }
