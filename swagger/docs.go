@@ -27,6 +27,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
+                "summary": "List Products",
                 "responses": {
                     "200": {
                         "description": "a list of products in the response",
@@ -36,6 +37,68 @@ const docTemplate = `{
                                 "$ref": "#/definitions/data.Product"
                             }
                         }
+                    },
+                    "500": {
+                        "description": "Unable to marshal JSON"
+                    }
+                }
+            },
+            "post": {
+                "description": "Add a new product to the data store",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Create Product",
+                "responses": {
+                    "200": {
+                        "description": "The newly created product",
+                        "schema": {
+                            "$ref": "#/definitions/data.Product"
+                        }
+                    }
+                }
+            }
+        },
+        "/:id": {
+            "get": {
+                "description": "returns a product with the given ID from the data store",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "products"
+                ],
+                "summary": "List Single Product",
+                "responses": {
+                    "200": {
+                        "description": "A Product in the response",
+                        "schema": {
+                            "$ref": "#/definitions/data.Product"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    }
+                }
+            },
+            "put": {
+                "description": "Update a product",
+                "tags": [
+                    "products"
+                ],
+                "summary": "Update Product",
+                "responses": {
+                    "200": {
+                        "description": "Product after update",
+                        "schema": {
+                            "$ref": "#/definitions/data.Product"
+                        }
+                    },
+                    "404": {
+                        "description": "Product not found"
+                    },
+                    "500": {
+                        "description": "Product not found"
                     }
                 }
             }
@@ -46,6 +109,7 @@ const docTemplate = `{
                 "tags": [
                     "products"
                 ],
+                "summary": "Delete Product",
                 "parameters": [
                     {
                         "type": "integer",
@@ -56,8 +120,20 @@ const docTemplate = `{
                     }
                 ],
                 "responses": {
-                    "201": {
-                        "description": "Created"
+                    "204": {
+                        "description": "No Content"
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.GenericError"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/handlers.GenericError"
+                        }
                     }
                 }
             }
@@ -88,6 +164,14 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "sku": {
+                    "type": "string"
+                }
+            }
+        },
+        "handlers.GenericError": {
+            "type": "object",
+            "properties": {
+                "message": {
                     "type": "string"
                 }
             }

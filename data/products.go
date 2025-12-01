@@ -95,7 +95,7 @@ func AddProduct(p *Product) {
 }
 
 func UpdateProduct(id int, p *Product) error {
-	_, pos, err := findProduct(id)
+	_, pos, err := FindProduct(id)
 
 	if err != nil {
 		return err
@@ -123,7 +123,7 @@ func DeleteProduct(id int) error {
 
 var ErrProductNotFound = fmt.Errorf("Product not found")
 
-func findProduct(id int) (*Product, int, error) {
+func FindProduct(id int) (*Product, int, error) {
 	for i, p := range productList {
 		if p.ID == id {
 			return p, i, nil

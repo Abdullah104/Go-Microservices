@@ -6,17 +6,16 @@ import (
 	"microservices/data"
 )
 
-// DeleteProduct deletes a product
-//
-//	@Description	deletes a product from the data store
-//	@Tags			products
-//
-//	@Param			id	path	int	true	"Product ID"
-//
-//	@Success		201
-//	@Router			/{id} [delete]
+// @Summary		Delete Product
+// @Description	deletes a product from the data store
+// @Tags			products
+// @Param			id	path	int	true	"Product ID"
+// @Success		204
+// @Failure		404	{object}	GenericError
+// @Failure		500	{object}	GenericError
+// @Router			/{id} [delete]
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
-	id := getProductID(r)
+	id := GetProductID(r)
 
 	p.l.Println("[DEBUG] Deleting record id", id)
 
@@ -35,4 +34,6 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 
 		return
 	}
+
+	rw.WriteHeader(http.StatusNoContent)
 }

@@ -22,6 +22,11 @@ definitions:
     - name
     - sku
     type: object
+  handlers.GenericError:
+    properties:
+      message:
+        type: string
+    type: object
 info:
   contact: {}
   description: Documentation for Product API
@@ -38,6 +43,48 @@ paths:
             items:
               $ref: '#/definitions/data.Product'
             type: array
+        "500":
+          description: Unable to marshal JSON
+      summary: List Products
+      tags:
+      - products
+    post:
+      description: Add a new product to the data store
+      responses:
+        "200":
+          description: The newly created product
+          schema:
+            $ref: '#/definitions/data.Product'
+      summary: Create Product
+      tags:
+      - products
+  /:id:
+    get:
+      description: returns a product with the given ID from the data store
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: A Product in the response
+          schema:
+            $ref: '#/definitions/data.Product'
+        "404":
+          description: Product not found
+      summary: List Single Product
+      tags:
+      - products
+    put:
+      description: Update a product
+      responses:
+        "200":
+          description: Product after update
+          schema:
+            $ref: '#/definitions/data.Product'
+        "404":
+          description: Product not found
+        "500":
+          description: Product not found
+      summary: Update Product
       tags:
       - products
   /{id}:
@@ -50,8 +97,17 @@ paths:
         required: true
         type: integer
       responses:
-        "201":
-          description: Created
+        "204":
+          description: No Content
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/handlers.GenericError'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/handlers.GenericError'
+      summary: Delete Product
       tags:
       - products
 produces:

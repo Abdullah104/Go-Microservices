@@ -71,7 +71,7 @@ func (p Products) MiddlewareProductValidation(next http.Handler) http.Handler {
 // getProductId returns the product's id from the url
 // Panics if cannot convert the id into an integer
 // This should never happen as the router ensures that this is a valid number
-func getProductID(r *http.Request) int {
+func GetProductID(r *http.Request) int {
 	// parse the product id from the url
 	vars := mux.Vars(r)
 

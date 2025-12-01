@@ -9,6 +9,13 @@ import (
 	"microservices/data"
 )
 
+// @Summary		Update Product
+// @Description	Update a product
+// @Tags			products
+// @Success		200	{object}	data.Product	"Product after update"
+// @Failure		404	"Product not found"
+// @Failure		500	"Product not found"
+// @Router			/:id [put]
 func (p *Products) UpdateProduct(rw http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
