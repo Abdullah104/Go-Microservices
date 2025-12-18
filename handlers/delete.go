@@ -13,7 +13,7 @@ import (
 // @Success		204
 // @Failure		404	{object}	GenericError
 // @Failure		500	{object}	GenericError
-// @Router			/{id} [delete]
+// @Router			/products/{id} [delete]
 func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 	id := GetProductID(r)
 
@@ -23,6 +23,8 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 
 	if err == data.ErrProductNotFound {
 		rw.WriteHeader(http.StatusNotFound)
+		rw.Header().Set("Content-Type", "application/json")
+
 		data.ToJSON(&GenericError{Message: err.Error()}, rw)
 
 		return
@@ -30,6 +32,8 @@ func (p *Products) DeleteProduct(rw http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		rw.WriteHeader(http.StatusInternalServerError)
+		rw.Header().Set("Content-Type", "application/json")
+
 		data.ToJSON(&GenericError{Message: err.Error()}, rw)
 
 		return

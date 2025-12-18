@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	_ "microservices/swagger"
+
 	"github.com/go-openapi/runtime/middleware"
 	"github.com/gorilla/mux"
 	"github.com/nicholasjackson/env"
@@ -17,6 +19,11 @@ import (
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
 
+// @title			Products API
+// @version		1.0
+// @description	A simple products management API
+// @host			localhost:9090
+// @BasePath		/
 func main() {
 	env.Parse()
 
@@ -28,10 +35,10 @@ func main() {
 	// Create a new serve mux and register the handlers
 	sm := mux.NewRouter()
 
-	idPath := "/{id:[0-9]+}"
+	idPath := "/products/{id:[0-9]+}"
 
 	getRouter := sm.Methods(http.MethodGet).Subrouter()
-	getRouter.HandleFunc("/", ph.GetProducts)
+	getRouter.HandleFunc("/products", ph.GetProducts)
 	getRouter.HandleFunc(idPath, ph.GetProduct)
 
 	putRouter := sm.Methods(http.MethodPut).Subrouter()
@@ -40,7 +47,7 @@ func main() {
 
 	postRouter := sm.Methods(http.MethodPost).Subrouter()
 	postRouter.Use(ph.MiddlewareProductValidation)
-	postRouter.HandleFunc("/", ph.AddProduct)
+	postRouter.HandleFunc("/products", ph.AddProduct)
 
 	deleteRouter := sm.Methods(http.MethodDelete).Subrouter()
 	deleteRouter.HandleFunc(idPath, ph.DeleteProduct)

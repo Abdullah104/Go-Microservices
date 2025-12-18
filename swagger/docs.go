@@ -21,7 +21,7 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/": {
+        "/products": {
             "get": {
                 "description": "returns the products from the data store",
                 "tags": [
@@ -59,7 +59,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/:id": {
+        "/products/:id": {
             "get": {
                 "description": "returns a product with the given ID from the data store",
                 "produces": [
@@ -103,7 +103,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/{id}": {
+        "/products/{id}": {
             "delete": {
                 "description": "deletes a product from the data store",
                 "tags": [

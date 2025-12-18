@@ -33,7 +33,7 @@ info:
   title: of Product API
   version: 1.0.0
 paths:
-  /:
+  /products:
     get:
       description: returns the products from the data store
       responses:
@@ -58,7 +58,7 @@ paths:
       summary: Create Product
       tags:
       - products
-  /:id:
+  /products/:id:
     get:
       description: returns a product with the given ID from the data store
       produces:
@@ -87,7 +87,7 @@ paths:
       summary: Update Product
       tags:
       - products
-  /{id}:
+  /products/{id}:
     delete:
       description: deletes a product from the data store
       parameters:

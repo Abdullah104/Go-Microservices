@@ -1,0 +1,138 @@
+openapi: 3.0.1
+info:
+  contact: {}
+  description: Documentation for Product API
+  title: of Product API
+  version: 1.0.0
+servers:
+- url: /
+paths:
+  /products:
+    get:
+      description: returns the products from the data store
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: "#/components/schemas/data.Product"
+                type: array
+          description: a list of products in the response
+        "500":
+          content: {}
+          description: Unable to marshal JSON
+      summary: List Products
+      tags:
+      - products
+    post:
+      description: Add a new product to the data store
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/data.Product"
+          description: The newly created product
+      summary: Create Product
+      tags:
+      - products
+  /products/:id:
+    get:
+      description: returns a product with the given ID from the data store
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/data.Product"
+          description: A Product in the response
+        "404":
+          content: {}
+          description: Product not found
+      summary: List Single Product
+      tags:
+      - products
+    put:
+      description: Update a product
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/data.Product"
+          description: Product after update
+        "404":
+          content: {}
+          description: Product not found
+        "500":
+          content: {}
+          description: Product not found
+      summary: Update Product
+      tags:
+      - products
+  /products/{id}:
+    delete:
+      description: deletes a product from the data store
+      parameters:
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          content: {}
+          description: No Content
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/handlers.GenericError"
+          description: Not Found
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/handlers.GenericError"
+          description: Internal Server Error
+      summary: Delete Product
+      tags:
+      - products
+components:
+  schemas:
+    data.Product:
+      description: defines the structure for an API product
+      example:
+        price: 6.027456183070403
+        name: name
+        description: description
+        id: 1
+        sku: sku
+      properties:
+        description:
+          type: string
+        id:
+          description: The ID for this product
+          minimum: 1
+          type: integer
+        name:
+          type: string
+        price:
+          type: number
+        sku:
+          type: string
+      required:
+      - id
+      - name
+      - sku
+      type: object
+    handlers.GenericError:
+      example:
+        message: message
+      properties:
+        message:
+          type: string
+      type: object
+x-original-swagger-version: "2.0"
