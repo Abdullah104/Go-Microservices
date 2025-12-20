@@ -5,6 +5,7 @@ go 1.25.4
 require (
 	github.com/go-openapi/runtime v0.29.2
 	github.com/go-playground/validator/v10 v10.28.0
+	github.com/gorilla/handlers v1.5.2
 	github.com/gorilla/mux v1.8.1
 	github.com/nicholasjackson/env v0.6.1
 	github.com/swaggo/swag v1.16.6
@@ -13,6 +14,7 @@ require (
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
+	github.com/felixge/httpsnoop v1.0.3 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.10 // indirect
 	github.com/go-openapi/analysis v0.24.1 // indirect
 	github.com/go-openapi/errors v0.22.4 // indirect
