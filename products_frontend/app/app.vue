@@ -1,7 +1,10 @@
 <template>
     <UApp>
+        <CustomHeader />
         <h2 class="pt-10 text-center">Menu</h2>
-        <UTable :data="products" :columns="columns" :loading="loading" />
+        <UMain>
+            <UTable :data="products" :columns="columns" :loading="loading" />
+        </UMain>
     </UApp>
     <pre>{{ error }}</pre>
 </template>
