@@ -1,6 +1,5 @@
 <template>
     <div>
-        <h2 class="pt-10 text-center">Menu</h2>
         <UTable :data="products" :columns="columns" :loading="loading" />
         <pre>{{ error }}</pre>
     </div>
@@ -34,4 +33,8 @@ const {
 } = await useAsyncData<Product[]>("products", (_nuxtApp, { signal }) =>
     $fetch(apiLocation + "/products", { signal }),
 );
+
+definePageMeta({
+    title: "Main",
+});
 </script>
