@@ -10,11 +10,13 @@
     "postinstall": "nuxt prepare"
   },
   "dependencies": {
+    "@formkit/addons": "^1.7.2",
     "@formkit/nuxt": "^1.7.2",
     "@nuxt/eslint": "^1.12.1",
     "@nuxt/hints": "^1.0.0-alpha.4",
     "@nuxt/ui": "^4.3.0",
     "@tailwindcss/vite": "^4.1.18",
+    "axios": "^1.13.2",
     "eslint": "^9.39.2",
     "nuxt": "^4.2.2",
     "tailwindcss": "^4.1.18",

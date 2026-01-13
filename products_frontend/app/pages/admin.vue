@@ -1,12 +1,17 @@
 <template>
-    <FormKit type="form" submit-label="Submit form" @submit="uploadImage">
+    <FormKit
+        type="form"
+        submit-label="Submit form"
+        use-local-storage
+        @submit="uploadImage"
+    >
         <FormKit
             name="id"
             type="number"
             label="Product ID"
             help="Enter the product id to upload an image for"
-            :plugins="[castIdToNumber]"
             validation="required"
+            :plugins="[castIdToNumber]"
         />
         <FormKit
             name="image"
@@ -20,6 +25,8 @@
 </template>
 
 <script setup lang="ts">
+import axios from "axios";
+
 definePageMeta({
     title: "Admin",
 });
@@ -27,5 +34,13 @@ definePageMeta({
 const castIdToNumber = (node) =>
     node.hook.input((value, next) => next(Number(value)));
 
-const uploadImage = async (fields) => {};
+const uploadImage = async (fields) => {
+    const data = new FormData();
+    data.append("id", fields.id);
+    data.append("file", fields.image);
+
+    axios.post("http://localhost:9091/", data, {
+        "content-type": `multipart/form-data; boundary=${data._boundary}`,
+    });
+};
 </script>

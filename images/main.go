@@ -10,6 +10,8 @@ import (
 	"syscall"
 	"time"
 
+	gohandlers "github.com/gorilla/handlers"
+
 	"github.com/gorilla/mux"
 	"github.com/hashicorp/go-hclog"
 	"github.com/nicholasjackson/env"
@@ -58,10 +60,13 @@ func main() {
 	gh := sm.Methods(http.MethodGet).Subrouter()
 	gh.HandleFunc(path, http.StripPrefix("/images/", http.FileServer(http.Dir(*basePath))).ServeHTTP)
 
+	// CORS
+	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
+
 	// create a new server
 	s := http.Server{
 		Addr:         *bindAddress,
-		Handler:      sm,
+		Handler:      ch(sm),
 		ErrorLog:     sl,
 		ReadTimeout:  5 * time.Second,
 		WriteTimeout: 10 * time.Second,
