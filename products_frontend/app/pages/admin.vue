@@ -37,10 +37,8 @@ const castIdToNumber = (node) =>
 const uploadImage = async (fields) => {
     const data = new FormData();
     data.append("id", fields.id);
-    data.append("file", fields.image);
+    data.append("file", fields.image[0].file);
 
-    axios.post("http://localhost:9091/", data, {
-        "content-type": `multipart/form-data; boundary=${data._boundary}`,
-    });
+    axios.post("http://localhost:9091/", data);
 };
 </script>
