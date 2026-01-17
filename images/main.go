@@ -44,14 +44,14 @@ func main() {
 
 	// Create the handlers.
 	fh := handlers.NewFiles(stor, l)
+	mw := handlers.GzipHandler{}
 
 	// create a new serve mux and register handlers
 	sm := mux.NewRouter()
 
 	path := "/images/{id:[0-9]+}/{filename:[a-zA-Z]+\\.[a-z]{3}}"
 
-	// filename regex: {filename:[a-zA-Z]+\\.[a-z]{3}}
-	// problem with file server is that it is dumb
+	// Upload files
 	ph := sm.Methods(http.MethodPost).Subrouter()
 	ph.HandleFunc(path, fh.UploadRest)
 	ph.HandleFunc("/", fh.UploadMultipart)
@@ -59,6 +59,7 @@ func main() {
 	// get files
 	gh := sm.Methods(http.MethodGet).Subrouter()
 	gh.HandleFunc(path, http.StripPrefix("/images/", http.FileServer(http.Dir(*basePath))).ServeHTTP)
+	gh.Use(mw.GzipMiddleware)
 
 	// CORS
 	ch := gohandlers.CORS(gohandlers.AllowedOrigins([]string{"http://localhost:3000"}))
