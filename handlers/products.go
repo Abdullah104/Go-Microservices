@@ -14,6 +14,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	protos "microservices/currency/protos/currency"
 	"microservices/data"
 	"net/http"
 	"strconv"
@@ -23,12 +24,14 @@ import (
 
 // Products is an HTTP handler
 type Products struct {
-	l *log.Logger
+	l  *log.Logger
+	v  *data.Validation
+	cc protos.CurrencyClient
 }
 
 // NewProducts creates a new Products handler with the given logger
-func NewProducts(l *log.Logger) *Products {
-	return &Products{l}
+func NewProducts(l *log.Logger, v *data.Validation, cc protos.CurrencyClient) *Products {
+	return &Products{l, v, cc}
 }
 
 // GenericError is a generic error message returned by the server

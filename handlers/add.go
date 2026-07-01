@@ -11,10 +11,10 @@ import (
 // @Success		200	{object}	data.Product	"The newly created product"
 // @Router			/products [post]
 func (p *Products) AddProduct(rw http.ResponseWriter, r *http.Request) {
-	prod := r.Context().Value(KeyProduct{}).(*data.Product)
+	product := r.Context().Value(KeyProduct{}).(*data.Product)
 
-	data.AddProduct(prod)
+	data.AddProduct(product)
 
 	rw.Header().Set("Content-Type", "application/json")
-	prod.ToJSON(rw)
+	product.ToJSON(rw)
 }

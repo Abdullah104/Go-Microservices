@@ -4,6 +4,8 @@ go 1.25.4
 
 replace products_client => ./clients/products
 
+replace microservices/currency => ./currency
+
 require (
 	github.com/go-openapi/runtime v0.29.2
 	github.com/go-playground/validator/v10 v10.30.1
@@ -11,6 +13,7 @@ require (
 	github.com/gorilla/mux v1.8.1
 	github.com/nicholasjackson/env v0.6.1
 	github.com/swaggo/swag v1.16.6
+	microservices/currency v0.0.0-00010101000000-000000000000
 	products_client v0.0.0-00010101000000-000000000000
 )
 
@@ -50,4 +53,7 @@ require (
 	golang.org/x/sys v0.39.0 // indirect
 	golang.org/x/text v0.32.0 // indirect
 	golang.org/x/tools v0.39.0 // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20251029180050-ab9386a59fda // indirect
+	google.golang.org/grpc v1.78.0 // indirect
+	google.golang.org/protobuf v1.36.11 // indirect
 )

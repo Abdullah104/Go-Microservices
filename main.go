@@ -3,19 +3,22 @@ package main
 import (
 	"context"
 	"log"
+	protos "microservices/currency/protos/currency"
+	"microservices/data"
 	"microservices/handlers"
+	_ "microservices/swagger"
 	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
 
-	_ "microservices/swagger"
-
 	"github.com/go-openapi/runtime/middleware"
 	gohandlers "github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
 	"github.com/nicholasjackson/env"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 var bindAddress = env.String("BIND_ADDRESS", false, ":9090", "Bind address for the server")
@@ -29,9 +32,19 @@ func main() {
 	env.Parse()
 
 	l := log.New(os.Stdout, "product-api", log.LstdFlags)
+	v := data.NewValidation()
+
+	conn, err := grpc.NewClient("localhost:9092", grpc.WithTransportCredentials(insecure.NewCredentials()))
+	if err != nil {
+		panic(err)
+	}
+	defer conn.Close()
+
+	// create client
+	cc := protos.NewCurrencyClient(conn)
 
 	// Create the handlers
-	ph := handlers.NewProducts(l)
+	ph := handlers.NewProducts(l, v, cc)
 
 	// Create a new serve mux and register the handlers
 	sm := mux.NewRouter()

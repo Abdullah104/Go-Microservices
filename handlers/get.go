@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"context"
+	protos "microservices/currency/protos/currency"
 	"microservices/data"
 	"net/http"
 )
@@ -41,11 +43,40 @@ func (p *Products) GetProduct(rw http.ResponseWriter, r *http.Request) {
 	// Fetch the product from the data store
 	prod, _, err := data.FindProduct(id)
 
-	if err == data.ErrProductNotFound {
-		http.Error(rw, "Product not found", http.StatusNotFound)
+	if err != nil {
+		p.l.Println("[ERROR] fetching product")
+
+		var statusCode int
+
+		if err == data.ErrProductNotFound {
+			statusCode = http.StatusNotFound
+		} else {
+			statusCode = http.StatusInternalServerError
+		}
+
+		rw.WriteHeader(statusCode)
+		data.ToJSON(&GenericError{Message: err.Error()}, rw)
 
 		return
 	}
+
+	// get exchange rate
+	rr := &protos.RateRequest{
+		Base:        protos.Currencies_EUR,
+		Destination: protos.Currencies_GBP,
+	}
+
+	resp, err := p.cc.GetRate(context.Background(), rr)
+	if err != nil {
+		p.l.Println("[ERROR] error getting new rate", err)
+
+		data.ToJSON(&GenericError{Message: err.Error()}, rw)
+
+		return
+	}
+
+	prod.Price = prod.Price * resp.Rate
+
 	rw.Header().Set("Content-Type", "application/json")
 
 	data.ToJSON(prod, rw)
